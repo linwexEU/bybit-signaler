@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True)
+@dataclass
 class Kline: 
     StartTime: str
     OpenPrice: str
@@ -9,10 +9,25 @@ class Kline:
     ClosePrice: str
     Volume: str
     Turnover: str
+    Interval: int | None = None
+    Confirm: bool | None = None
+    Timestamp: int | None = None
 
     @staticmethod
-    def build_obj(item: list) -> "Kline": 
-        return Kline(StartTime=item[0], OpenPrice=item[1], HighPrice=item[2], ClosePrice=item[3], Volume=item[4], Turnover=item[5])
+    def build_obj(item: list, time: int) -> "Kline": 
+        return Kline(
+            StartTime=item[0], OpenPrice=item[1], HighPrice=item[2], 
+            ClosePrice=item[3], Volume=item[4], Turnover=item[5], 
+            Timestamp=time, Confirm=True
+        )
+
+    @staticmethod
+    def build_from_dict(item: dict) -> "Kline": 
+        return Kline(
+            StartTime=item["start"], OpenPrice=item["open"], HighPrice=item["high"], 
+            ClosePrice=item["close"], Volume=item["volume"], Turnover=item["turnover"], 
+            Interval=item["interval"], Confirm=item["confirm"], Timestamp=item["timestamp"]
+        )
 
 
 @dataclass

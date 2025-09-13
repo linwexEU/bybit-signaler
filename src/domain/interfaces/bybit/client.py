@@ -12,4 +12,8 @@ class AbstractByBitRESTClient(ABC):
 
 
 class AbstractByBitWSClient(ABC):
-    pass 
+    @abstractmethod
+    def handle_message(self, message: dict) -> None: ... 
+
+    @abstractmethod
+    def listen(self, symbol: str, interval: int = 5) -> None: ...
