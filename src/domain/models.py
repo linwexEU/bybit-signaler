@@ -6,6 +6,7 @@ class Kline:
     StartTime: str
     OpenPrice: str
     HighPrice: str
+    LowPrice: str
     ClosePrice: str
     Volume: str
     Turnover: str
@@ -17,8 +18,8 @@ class Kline:
     def build_obj(item: list, time: int) -> "Kline": 
         return Kline(
             StartTime=item[0], OpenPrice=item[1], HighPrice=item[2], 
-            ClosePrice=item[3], Volume=item[4], Turnover=item[5], 
-            Timestamp=time, Confirm=True
+            LowPrice=item[3], ClosePrice=item[4], Volume=item[5],
+            Turnover=item[7], Timestamp=time, Confirm=True
         )
 
     @staticmethod
@@ -26,7 +27,8 @@ class Kline:
         return Kline(
             StartTime=item["start"], OpenPrice=item["open"], HighPrice=item["high"], 
             ClosePrice=item["close"], Volume=item["volume"], Turnover=item["turnover"], 
-            Interval=item["interval"], Confirm=item["confirm"], Timestamp=item["timestamp"]
+            Interval=item["interval"], Confirm=item["confirm"], Timestamp=item["timestamp"],
+            LowPrice=item["low"]
         )
 
 
@@ -55,3 +57,35 @@ class Ticker:
             LowPrice24h=item.get("lowPrice24h"), Turnover24h=item.get("turnover24h"), Volume24h=item.get("volume24h"), 
             UsdIndexPrice=item.get("usdIndexPrice")
         )
+
+
+@dataclass
+class Bid: 
+    BidPrice: str
+    BidSize: str
+
+    @staticmethod
+    def build_obj(item: list) -> "Bid": 
+        return Bid(BidPrice=item[0], BidSize=item[1])
+
+
+@dataclass
+class Ask: 
+    AskPrice: str
+    AskSize: str 
+
+    @staticmethod
+    def build_obj(item: list) -> "Ask": 
+        return Ask(AskPrice=item[0], AskSize=item[1])
+
+
+@dataclass
+class OrderBook: 
+    Bids: list[Bid]
+    Asks: list[Ask]
+    
+    @staticmethod
+    def build_obj(order_book: dict) -> "OrderBook":
+        bids = [Bid.build_obj(bid) for bid in order_book["b"]]
+        asks = [Ask.build_obj(ask) for ask in order_book["a"]] 
+        return OrderBook(Bids=bids, Asks=asks)

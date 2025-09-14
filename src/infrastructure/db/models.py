@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from typing import Any
 
 from sqlalchemy import TIMESTAMP, ForeignKey, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -55,8 +56,8 @@ class OrderBook(Base):
     Ticker: Mapped[str] = mapped_column(nullable=False, index=True)
     Timestamp: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), default=datetime.now(timezone.utc))
 
-    Bids: Mapped[JSON] = mapped_column(nullable=False)
-    Asks: Mapped[JSON] = mapped_column(nullable=False)
+    Bids: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
+    Asks: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
 
 
 class Trade(Base): 
