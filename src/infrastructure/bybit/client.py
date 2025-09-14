@@ -32,19 +32,7 @@ class ByBitWSClient(AbstractByBitWSClient):
     def handle_message(self, message: dict) -> None: 
         if "topic" in message and "kline" in message["topic"]:
             kline = Kline.build_from_dict(message["data"][0])
+            print(kline)
 
     def listen(self, symbol: str, interval: int = 5) -> None: 
         self.ws_client.kline_stream(interval=interval, symbol=symbol, callback=self.handle_message)
-
-
-if __name__ == "__main__":
-    rest_client_instance = ByBitRESTClient()
-    ws_client_instance  = ByBitWSClient()
-    # ws_client_instance.listen("ALPHAUSDT")
-    
-    ws_client_instance.listen("ALUUSDT")
-    # try:
-    #     while True: 
-    #         time.sleep(0.3)
-    # except KeyboardInterrupt: 
-    #     pass 

@@ -19,6 +19,7 @@ class IndicatorRepository(AbstractIndicatorRepository):
             return result.scalar()
         return result.scalars().all()
 
-    def insert(self, payload: dict) -> None:
-        query = insert(Indicator).values(**payload)
-        self.session.execute(query)
+    def insert(self, payload: dict) -> int:
+        query = insert(Indicator).values(**payload).returning(Indicator.Id)
+        result = self.session.execute(query)
+        return result.scalar()

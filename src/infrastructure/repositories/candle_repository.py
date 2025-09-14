@@ -19,6 +19,7 @@ class CandleRepository(AbstractCandleRepository):
             return result.scalar()
         return result.scalars().all()
 
-    def insert(self, payload: dict) -> None:
-        query = insert(Candle).values(**payload)
-        self.session.execute(query)
+    def insert(self, payload: dict) -> int:
+        query = insert(Candle).values(**payload).returning(Candle.Id)
+        result = self.session.execute(query)
+        return result.scalar()

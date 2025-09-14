@@ -19,6 +19,7 @@ class OrderBookRepository(AbstractOrderBookRepository):
             return result.scalar()
         return result.scalars().all()
 
-    def insert(self, payload: dict) -> None:
-        query = insert(OrderBook).values(**payload)
-        self.session.execute(query)
+    def insert(self, payload: dict) -> int:
+        query = insert(OrderBook).values(**payload).returning(OrderBook.Id)
+        result = self.session.execute(query)
+        return result.scalar()

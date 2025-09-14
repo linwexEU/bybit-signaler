@@ -19,6 +19,7 @@ class LevelRepository(AbstractLevelRepository):
             return result.scalar()
         return result.scalars().all()
 
-    def insert(self, payload: dict) -> None:
-        query = insert(Level).values(**payload)
-        self.session.execute(query)
+    def insert(self, payload: dict) -> int:
+        query = insert(Level).values(**payload).returning(Level.Id)
+        result = self.session.execute(query)
+        return result.scalar()

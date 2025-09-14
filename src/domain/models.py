@@ -1,4 +1,7 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
+from datetime import datetime
+
+from src.domain.enums import TradeSide, LevelType
 
 
 @dataclass
@@ -19,7 +22,7 @@ class Kline:
         return Kline(
             StartTime=item[0], OpenPrice=item[1], HighPrice=item[2], 
             LowPrice=item[3], ClosePrice=item[4], Volume=item[5],
-            Turnover=item[7], Timestamp=time, Confirm=True
+            Turnover=item[6], Timestamp=time, Confirm=True
         )
 
     @staticmethod
@@ -89,3 +92,65 @@ class OrderBook:
         bids = [Bid.build_obj(bid) for bid in order_book["b"]]
         asks = [Ask.build_obj(ask) for ask in order_book["a"]] 
         return OrderBook(Bids=bids, Asks=asks)
+
+
+@dataclass
+class EntityToDict:
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+
+@dataclass
+class Candle(EntityToDict):
+    Ticker: str
+    Timeframe: str
+    Timestamp: datetime
+    Open: float
+    High: float
+    Low: float
+    Close: float
+    Volume: float
+
+
+@dataclass
+class Indicator(EntityToDict):
+    CandleId: int
+    Ema9: float
+    Ema21: float
+    Rsi: float
+    Macd: float
+    MacdSignal: float
+    MacdHist: float
+    BbHigh: float
+    BbLow: float
+    BbMid: float
+    Atr: float
+    Obv: float
+
+
+@dataclass
+class OrderBook(EntityToDict):
+    Ticker: str
+    Timestamp: datetime
+    Bids: dict
+    Asks: dict
+
+
+@dataclass
+class Trade(EntityToDict):
+    Ticker: str
+    Timestamp: datetime
+    Price: float
+    Quantity: float
+    Side: TradeSide
+    IsMaker: bool
+
+
+@dataclass
+class Level(EntityToDict):
+    Ticker: str
+    LevelPrice: float
+    Strength: int
+    Type: LevelType
+    LastTouched: datetime

@@ -19,6 +19,7 @@ class TradeRepository(AbstractTradeRepository):
             return result.scalar()
         return result.scalars().all()
 
-    def insert(self, payload: dict) -> None:
-        query = insert(Trade).values(**payload)
-        self.session.execute(query)
+    def insert(self, payload: dict) -> int:
+        query = insert(Trade).values(**payload).returning(Trade.Id)
+        result = self.session.execute(query)
+        return result.scalar()
