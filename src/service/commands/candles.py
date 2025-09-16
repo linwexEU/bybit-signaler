@@ -27,6 +27,7 @@ class CandleService:
                 candle = Candle(Ticker=symbol, Timeframe=interval, Timestamp=timestamp, Open=float(kline.OpenPrice),
                                 High=float(kline.HighPrice), Low=float(kline.LowPrice), Close=float(kline.ClosePrice),
                                 Volume=float(kline.Volume))
+                print(candle)
                 last_candle_id = uow.candle_repository.insert(candle.to_dict())
 
         # Create dataframe
@@ -39,4 +40,4 @@ class CandleService:
 
 if __name__ == "__main__":
     candle_service = CandleService()
-    candle_service.save_candles("RAREUSDT")
+    candle_service.save_candles("ETHUSDT")

@@ -12,6 +12,8 @@ dependencies = [
     "psycopg2>=2.9.10",
     "pybit>=5.11.0",
     "pydantic-settings>=2.10.1",
+    "selenium>=4.35.0",
+    "setuptools>=80.9.0",
     "sqlalchemy>=2.0.43",
     "ta>=0.11.0",
 ]
