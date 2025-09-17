@@ -1,7 +1,9 @@
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from datetime import datetime
 
 from src.domain.enums import TradeSide, LevelType
+from src.infrastructure.db.models import Candle as DbCandle
+from src.infrastructure.db.models import Indicator as DbIndicator
 
 
 @dataclass
@@ -103,6 +105,7 @@ class EntityToDict:
 
 @dataclass
 class Candle(EntityToDict):
+    Id: int | None = field(default=None, kw_only=True)
     Ticker: str
     Timeframe: str
     Timestamp: datetime
@@ -111,6 +114,13 @@ class Candle(EntityToDict):
     Low: float
     Close: float
     Volume: float
+
+    @staticmethod
+    def from_orm(candle: DbCandle) -> "Candle": 
+        return Candle(
+            Ticker=candle.Ticker, Timeframe=candle.Timeframe, Timestamp=candle.Timestamp, Id=candle.Id,
+            Open=candle.Open, High=candle.High, Low=candle.Low, Close=candle.Close, Volume=candle.Volume
+        )
 
 
 @dataclass
@@ -127,6 +137,14 @@ class Indicator(EntityToDict):
     BbMid: float
     Atr: float
     Obv: float
+
+    @staticmethod
+    def from_orm(indicator: DbIndicator) -> list["Indicator"]: 
+        return Indicator(
+            CandleId=indicator.CandleId, Ema9=indicator.Ema9, Ema21=indicator.Ema21, Rsi=indicator.Rsi,
+            Macd=indicator.Macd, MacdSignal=indicator.MacdSignal, MacdHist=indicator.MacdHist, Obv=indicator.Obv,
+            BbHigh=indicator.BbHigh, BbLow=indicator.BbLow, BbMid=indicator.BbMid, Atr=indicator.Atr
+        )
 
 
 @dataclass

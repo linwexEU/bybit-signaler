@@ -17,7 +17,7 @@ class TradingView(AbstractTradingView):
     def __init__(self): 
         # Init options
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument("--start-maximized")
+        chrome_options.add_argument("--headless=new")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
         chrome_options.add_experimental_option('useAutomationExtension', False)
         chrome_options.add_argument("--disable-blink-features=AutomationControlled")
@@ -79,6 +79,9 @@ class TradingView(AbstractTradingView):
         self._load_login_cookies()
         self._wait_until_page_loaded()
 
+        # Set size for headless mode
+        self.driver.set_window_size(1920, 1080)
+
         # Search button
         search_button = self.driver.find_element(By.XPATH, '/html/body/div[3]/div[3]/div[2]/div[2]/div/div/div/button[1]')
         search_button.click()
@@ -98,11 +101,11 @@ class TradingView(AbstractTradingView):
 
         screenshot_button = self.driver.find_element(By.XPATH, '//*[@id="header-toolbar-screenshot"]')
         screenshot_button.click() 
-        time.sleep(2)
+        time.sleep(1)
 
         download_screenshot = self.driver.find_element(By.XPATH, '//*[@id="overlap-manager-root"]/div[2]/span/div[1]/div/div/div[2]')
         download_screenshot.click()
-        time.sleep(2)
+        time.sleep(1)
 
     def close_driver(self) -> None: 
         self.driver.close() 
