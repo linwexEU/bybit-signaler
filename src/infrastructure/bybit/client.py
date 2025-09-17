@@ -19,4 +19,4 @@ class ByBitRESTClient(AbstractByBitRESTClient):
     
     def get_order_book(self, symbol: str) -> OrderBook: 
         order_book = self.session.get_orderbook(category="linear", symbol=symbol)
-        return OrderBook.build_obj(order_book["result"])
+        return OrderBook.build_obj(symbol, order_book["result"])

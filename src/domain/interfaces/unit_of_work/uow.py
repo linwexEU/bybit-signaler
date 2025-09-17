@@ -2,8 +2,8 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 from src.domain.interfaces.repositories import AbstractCandleRepository, AbstractIndicatorRepository, \
-                                               AbstractLevelRepository, AbstractOrderBookRepository, \
-                                               AbstractTradeRepository
+                                               AbstractLevelRepository, AbstractOrderBookRepository
+                                               
 
 
 class AbstractUnitOfWork(ABC):
@@ -11,7 +11,6 @@ class AbstractUnitOfWork(ABC):
     indicator_repository: AbstractIndicatorRepository
     level_repository: AbstractLevelRepository
     order_book_repository: AbstractOrderBookRepository
-    trade_repository: AbstractTradeRepository
 
     @abstractmethod
     def commit(self) -> None: ...

@@ -3,8 +3,7 @@ from typing import Any
 from sqlalchemy.orm import Session, sessionmaker
 
 from src.domain.interfaces.unit_of_work import AbstractUnitOfWork
-from src.infrastructure.repositories import CandleRepository, IndicatorRepository, LevelRepository, \
-                                            OrderBookRepository, TradeRepository
+from src.infrastructure.repositories import CandleRepository, IndicatorRepository, LevelRepository, OrderBookRepository
 
 
 class SQLAlchemyUnitOfWork(AbstractUnitOfWork):
@@ -22,7 +21,6 @@ class SQLAlchemyUnitOfWork(AbstractUnitOfWork):
         self.indicator_repository = IndicatorRepository(self.session)
         self.level_repository = LevelRepository(self.session)
         self.order_book_repository = OrderBookRepository(self.session)
-        self.trade_repository = TradeRepository(self.session)
         return self
 
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:

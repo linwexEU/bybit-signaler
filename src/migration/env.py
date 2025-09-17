@@ -10,7 +10,7 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from src.infrastructure.db.models import Candle, Indicator, OrderBook, Trade, Level #noqa
+from src.infrastructure.db.models import Candle, Indicator, OrderBook, Level #noqa
 from src.infrastructure.db.base import Base
 from src.config import settings
 

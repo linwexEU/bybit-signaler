@@ -1,9 +1,11 @@
 from dataclasses import dataclass, asdict, field
-from datetime import datetime
+from datetime import datetime, timezone
 
-from src.domain.enums import TradeSide, LevelType
+from src.domain.enums import LevelType
 from src.infrastructure.db.models import Candle as DbCandle
 from src.infrastructure.db.models import Indicator as DbIndicator
+from src.infrastructure.db.models import OrderBook as DbOrderBook
+from src.infrastructure.db.models import Level as DbLevel
 
 
 @dataclass
@@ -85,22 +87,30 @@ class Ask:
 
 
 @dataclass
-class OrderBook: 
-    Bids: list[Bid]
-    Asks: list[Ask]
-    
-    @staticmethod
-    def build_obj(order_book: dict) -> "OrderBook":
-        bids = [Bid.build_obj(bid) for bid in order_book["b"]]
-        asks = [Ask.build_obj(ask) for ask in order_book["a"]] 
-        return OrderBook(Bids=bids, Asks=asks)
-
-
-@dataclass
 class EntityToDict:
 
     def to_dict(self) -> dict:
         return asdict(self)
+
+
+@dataclass
+class OrderBook(EntityToDict):
+    Ticker: str
+    Timestamp: datetime = field(default=datetime.now(timezone.utc), kw_only=True) 
+    Bids: list[Bid]
+    Asks: list[Ask]
+    
+    @staticmethod
+    def build_obj(ticker: str, order_book: dict) -> "OrderBook":
+        bids = [Bid.build_obj(bid) for bid in order_book["b"]]
+        asks = [Ask.build_obj(ask) for ask in order_book["a"]] 
+        return OrderBook(Ticker=ticker, Bids=bids, Asks=asks)
+    
+    @staticmethod 
+    def from_orm(order_book: DbOrderBook) -> "OrderBook": 
+        bids = [Bid(BidPrice=item["BidPrice"], BidSize=item["BidSize"]) for item in order_book.Bids]
+        asks = [Ask(AskPrice=item["AskPrice"], AskSize=item["AskPrice"]) for item in order_book.Asks]
+        return OrderBook(Ticker=order_book.Ticker, Timestamp=order_book.Timestamp, Bids=bids, Asks=asks)
 
 
 @dataclass
@@ -148,27 +158,16 @@ class Indicator(EntityToDict):
 
 
 @dataclass
-class OrderBook(EntityToDict):
-    Ticker: str
-    Timestamp: datetime
-    Bids: dict
-    Asks: dict
-
-
-@dataclass
-class Trade(EntityToDict):
-    Ticker: str
-    Timestamp: datetime
-    Price: float
-    Quantity: float
-    Side: TradeSide
-    IsMaker: bool
-
-
-@dataclass
 class Level(EntityToDict):
     Ticker: str
     LevelPrice: float
     Strength: int
     Type: LevelType
     LastTouched: datetime
+
+    @staticmethod
+    def from_orm(level: DbLevel) -> "Level": 
+        return Level(
+            Ticker=level.Ticker, LevelPrice=level.LevelPrice, Strength=level.Strength, 
+            Type=level.Type, LastTouched=level.LastTouched
+        )

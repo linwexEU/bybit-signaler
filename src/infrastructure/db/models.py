@@ -5,7 +5,7 @@ from sqlalchemy import TIMESTAMP, ForeignKey, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.infrastructure.db.base import Base
-from src.domain.enums import LevelType, TradeSide
+from src.domain.enums import LevelType
 
 
 class Candle(Base): 
@@ -58,19 +58,6 @@ class OrderBook(Base):
 
     Bids: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
     Asks: Mapped[dict[str, Any]] = mapped_column(JSON, nullable=False)
-
-
-class Trade(Base): 
-    __tablename__ = "trades"
-
-    Id: Mapped[int] = mapped_column(primary_key=True, index=True)
-    Ticker: Mapped[str] = mapped_column(nullable=False, index=True)
-    Timestamp: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), index=True)
-
-    Price: Mapped[float] = mapped_column(nullable=False) 
-    Quantity: Mapped[float] = mapped_column(nullable=False) 
-    Side: Mapped[TradeSide] = mapped_column(nullable=False)
-    IsMaker: Mapped[bool] = mapped_column(nullable=True)
 
 
 class Level(Base): 
