@@ -13,9 +13,6 @@ class CandleStore(AbstractCandleStore):
     def push_many(self, klines: list[Kline]) -> None:
         self.queue += klines
 
-    def push_closed(self, kline: Kline) -> None:
-        self.queue.append(kline)
-
     def to_dataframe(self) -> pandas.DataFrame:
         if not self.queue:
             return pandas.DataFrame()
