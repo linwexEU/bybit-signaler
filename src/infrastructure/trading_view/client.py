@@ -74,6 +74,20 @@ class TradingView(AbstractTradingView):
         # Save cookies
         self._save_login_cookies()
 
+    def _download_screenshot(self) -> None: 
+        screenshot_button = self.driver.find_element(By.XPATH, '//*[@id="header-toolbar-screenshot"]')
+        screenshot_button.click() 
+        time.sleep(1)
+
+        download_screenshot = self.driver.find_element(By.XPATH, '//*[@id="overlap-manager-root"]/div[2]/span/div[1]/div/div/div[2]')
+        download_screenshot.click()
+        time.sleep(1)
+
+    def _open_additional_tfs(self) -> None:
+        additional_tf = self.driver.find_element(By.XPATH, '//*[@id="header-toolbar-intervals"]/button')
+        additional_tf.click()
+        time.sleep(1)
+
     def get_ticker_chart(self, ticker: str) -> None: 
         self.driver.get("https://ru.tradingview.com/")
         self._load_login_cookies()
@@ -99,13 +113,49 @@ class TradingView(AbstractTradingView):
         self._wait_for_element((By.XPATH, '//*[@id="header-toolbar-screenshot"]'))
         time.sleep(1)
 
-        screenshot_button = self.driver.find_element(By.XPATH, '//*[@id="header-toolbar-screenshot"]')
-        screenshot_button.click() 
+        # 1h TF
+        self._download_screenshot()
+
+        # 5m TF
+        tf_5m_button = self.driver.find_element(By.XPATH, '//*[@id="header-toolbar-intervals"]/div/button[1]')
+        tf_5m_button.click()
         time.sleep(1)
 
-        download_screenshot = self.driver.find_element(By.XPATH, '//*[@id="overlap-manager-root"]/div[2]/span/div[1]/div/div/div[2]')
-        download_screenshot.click()
+        self._download_screenshot()
+
+        # 15m TF
+        tf_15m_button = self.driver.find_element(By.XPATH, '//*[@id="header-toolbar-intervals"]/div/button[2]')
+        tf_15m_button.click()
         time.sleep(1)
+
+        self._download_screenshot()
+
+        # 4h TF
+        tf_14h_button = self.driver.find_element(By.XPATH, '//*[@id="header-toolbar-intervals"]/div/button[4]')
+        tf_14h_button.click()
+        time.sleep(1)
+
+        self._download_screenshot()
+
+        # Open additional TF
+        self._open_additional_tfs()
+
+        # 1D TF 
+        tf_1d_button = self.driver.find_element(By.XPATH, '//*[@id="overlap-manager-root"]/div[2]/span/div[1]/div/div/div/div[34]/div')
+        tf_1d_button.click()
+        time.sleep(1)
+
+        self._download_screenshot()
+
+        # Open additional TF
+        self._open_additional_tfs()
+
+        # 1W TF
+        tf_1w_button = self.driver.find_element(By.XPATH, '//*[@id="overlap-manager-root"]/div[2]/span/div[1]/div/div/div/div[36]/div')
+        tf_1w_button.click()
+        time.sleep(1)
+
+        self._download_screenshot()
 
     def close_driver(self) -> None: 
         self.driver.close() 
@@ -116,3 +166,8 @@ class TradingView(AbstractTradingView):
     
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None: 
         self.close_driver()
+
+
+if __name__ == "__main__": 
+    trading_view = TradingView()
+    trading_view.get_ticker_chart("SOLUSDT")

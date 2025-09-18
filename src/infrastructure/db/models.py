@@ -31,6 +31,8 @@ class Indicator(Base):
     Id: Mapped[int] = mapped_column(primary_key=True, index=True)
     CandleId: Mapped[int] = mapped_column(ForeignKey("candles.Id"))
 
+    Timeframe: Mapped[str] = mapped_column(nullable=False, index=True) 
+
     Ema9: Mapped[float] = mapped_column(nullable=True)
     Ema21: Mapped[float] = mapped_column(nullable=True)
     Rsi: Mapped[float] = mapped_column(nullable=True)

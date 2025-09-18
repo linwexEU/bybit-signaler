@@ -2,10 +2,12 @@ __all__ = (
     "AbstractByBitRESTClient",
     "AbstractSystemManager", 
     "AbstractCandleStore", 
-    "AbstractTradingView"
+    "AbstractTradingView", 
+    "AbstractOpenAIClient"
 )
 
 from src.domain.interfaces.bybit.client import AbstractByBitRESTClient
 from src.domain.interfaces.bybit.system_manager import AbstractSystemManager
 from src.domain.interfaces.bybit.store import AbstractCandleStore
 from src.domain.interfaces.trading_view.client import AbstractTradingView
+from src.domain.interfaces.openai.client import AbstractOpenAIClient

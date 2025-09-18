@@ -114,7 +114,7 @@ class OrderBook(EntityToDict):
 
 
 @dataclass
-class Candle(EntityToDict):
+class Candle:
     Id: int | None = field(default=None, kw_only=True)
     Ticker: str
     Timeframe: str
@@ -131,11 +131,18 @@ class Candle(EntityToDict):
             Ticker=candle.Ticker, Timeframe=candle.Timeframe, Timestamp=candle.Timestamp, Id=candle.Id,
             Open=candle.Open, High=candle.High, Low=candle.Low, Close=candle.Close, Volume=candle.Volume
         )
+    
+    def to_dict(self) -> dict: 
+        return {
+            "Ticker": self.Ticker, "Timeframe": self.Timeframe, "Timestamp": self.Timestamp, "Open": self.Open, 
+            "High": self.High, "Low": self.Low, "Close": self.Close, "Volume": self.Volume
+        }
 
 
 @dataclass
 class Indicator(EntityToDict):
     CandleId: int
+    Timeframe: str
     Ema9: float
     Ema21: float
     Rsi: float
@@ -153,7 +160,7 @@ class Indicator(EntityToDict):
         return Indicator(
             CandleId=indicator.CandleId, Ema9=indicator.Ema9, Ema21=indicator.Ema21, Rsi=indicator.Rsi,
             Macd=indicator.Macd, MacdSignal=indicator.MacdSignal, MacdHist=indicator.MacdHist, Obv=indicator.Obv,
-            BbHigh=indicator.BbHigh, BbLow=indicator.BbLow, BbMid=indicator.BbMid, Atr=indicator.Atr
+            BbHigh=indicator.BbHigh, BbLow=indicator.BbLow, BbMid=indicator.BbMid, Atr=indicator.Atr, Timeframe=indicator.Timeframe
         )
 
 

@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     COOKIES_PATH: str
     DOWNLOAD_DIR: str
 
+    OPENAI_API_KEY: str
+
     @property
     def DATABASE_URL(self) -> str: 
         return f"postgresql://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"

@@ -16,7 +16,7 @@ class SystemManager(AbstractSystemManager):
         )
 
     @staticmethod
-    def calculate_indicators(dataframe: pandas.DataFrame, candle_id: int) -> Indicator:
+    def calculate_indicators(dataframe: pandas.DataFrame, interval: str, candle_id: int) -> Indicator:
         if dataframe.empty or len(dataframe) < 21:
             raise ValueError("Too small dataframe. Can't do calculation")
 
@@ -50,4 +50,4 @@ class SystemManager(AbstractSystemManager):
         return Indicator(CandleId=candle_id, Ema9=float(ema9.iloc[-1]), Ema21=float(ema21.iloc[-1]), Rsi=float(rsi.iloc[-1]),
                          Macd=float(macd.iloc[-1]), MacdSignal=float(macd_signal.iloc[-1]), MacdHist=float(macd_hist.iloc[-1]),
                          BbHigh=float(bb_high.iloc[-1]), BbLow=float(bb_low.iloc[-1]), BbMid=float(bb_mid.iloc[-1]),
-                         Atr=float(atr.iloc[-1]), Obv=float(obv.iloc[-1]))
+                         Atr=float(atr.iloc[-1]), Obv=float(obv.iloc[-1]), Timeframe=interval)

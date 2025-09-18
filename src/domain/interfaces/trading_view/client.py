@@ -22,3 +22,9 @@ class AbstractTradingView(ABC):
 
     @abstractmethod 
     def _wait_for_element(self, element: tuple) -> None: ... 
+
+    @abstractmethod 
+    def _download_screenshot(self) -> None: ... 
+
+    @abstractmethod
+    def _open_additional_tfs(self) -> None: ...
