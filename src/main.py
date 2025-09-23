@@ -18,15 +18,15 @@ class BybitBotSignaler:
 
     def schedule_tasks(self) -> None: 
         for ticker in self.tickers:
-            schedule.every(5).minutes.do(collecting_data_every_5m, ticker=ticker.SYMBOL)
-            schedule.every(15).minutes.do(collecting_data_every_15m, ticker=ticker.SYMBOL)
-            schedule.every(1).hour.do(collecting_data_every_1h, ticker=ticker.SYMBOL)
-            schedule.every(1).hour.do(collecting_order_book_every_1h, ticker=ticker.SYMBOL)
-            schedule.every(1).hour.do(collecting_levels_every_1h, ticker=ticker.SYMBOL)
-            schedule.every(4).hours.do(collecting_data_every_4h, ticker=ticker.SYMBOL)
-            schedule.every(5).hours.do(forecast_task, ticker=ticker.SYMBOL, worker=self.worker, telegram_client=self.tg_client)
-            schedule.every().day.at("00:00").do(collecting_data_every_day, ticker=ticker.SYMBOL)
-            schedule.every().monday.do(collecting_data_every_week, ticker=ticker.SYMBOL)
+            schedule.every(5).minutes.do(collecting_data_every_5m, ticker=ticker.Symbol)
+            schedule.every(15).minutes.do(collecting_data_every_15m, ticker=ticker.Symbol)
+            schedule.every(1).hour.do(collecting_data_every_1h, ticker=ticker.Symbol)
+            schedule.every(1).hour.do(collecting_order_book_every_1h, ticker=ticker.Symbol)
+            schedule.every(1).hour.do(collecting_levels_every_1h, ticker=ticker.Symbol)
+            schedule.every(4).hours.do(collecting_data_every_4h, ticker=ticker.Symbol)
+            schedule.every(5).hours.do(forecast_task, ticker=ticker.Symbol, worker=self.worker, telegram_client=self.tg_client)
+            schedule.every().day.at("00:00").do(collecting_data_every_day, ticker=ticker.Symbol)
+            schedule.every().monday.do(collecting_data_every_week, ticker=ticker.Symbol)
         
 
 if __name__ == "__main__": 
