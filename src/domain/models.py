@@ -37,6 +37,9 @@ class Kline:
             Interval=item["interval"], Confirm=item["confirm"], Timestamp=item["timestamp"],
             LowPrice=item["low"]
         )
+    
+    def to_dict(self) -> dict: 
+        return asdict(self)
 
 
 @dataclass

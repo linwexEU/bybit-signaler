@@ -166,8 +166,3 @@ class TradingView(AbstractTradingView):
     
     def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None: 
         self.close_driver()
-
-
-if __name__ == "__main__": 
-    trading_view = TradingView()
-    trading_view.get_ticker_chart("SOLUSDT")

@@ -1,22 +1,29 @@
 from datetime import datetime, timezone
 
 from src.domain.models import Candle
-from src.infrastructure.bybit import ByBitRESTClient, CandleStore
+from src.infrastructure.bybit import ByBitRESTClient
 from src.infrastructure.unit_of_work import SQLAlchemyUnitOfWork
 from src.infrastructure.db.base import session_factory
+from src.infrastructure.redis import RedisClient
+from src.service.commands.indicators import IndicatorCommands
 
 
 class CandleCommands:
     @staticmethod
-    def get_and_save_candles(store: CandleStore, ticker: str, interval: str = "5", limit: int = 200) -> int:
+    def get_and_save_candles(ticker: str, interval: str = "5", limit: int = 200) -> int:
         # Init ByBitClient
         rest_instance = ByBitRESTClient() 
 
         # Get klines
         klines = rest_instance.get_klines(ticker, interval, limit)
 
-        # Push to queue
-        store.push_many(klines)
+        # Save klines to Redis
+        with RedisClient() as redis_client: 
+            klines_from_redis = redis_client.get(ticker)
+            if klines_from_redis:
+                redis_client.set_key(ticker, [item.to_dict() for item in klines] + klines_from_redis)
+            else:
+                redis_client.set_key(ticker, [item.to_dict() for item in klines])
 
         # Save to db
         last_candle_id = None

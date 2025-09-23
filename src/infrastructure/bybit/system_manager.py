@@ -2,15 +2,16 @@ import pandas
 import ta
 
 from src.domain.interfaces import AbstractSystemManager
-from src.domain.models import Indicator
+from src.domain.models import Indicator, Ticker
+from src.infrastructure.redis import RedisClient
 
 
 class SystemManager(AbstractSystemManager): 
     @staticmethod
-    def get_active_tickers(tickers: list[dict], threshold: int) -> list[dict]:
+    def get_active_tickers(tickers: list[Ticker], threshold: int) -> list[Ticker]:
         return list(
             filter(
-                lambda t: float(t["turnover24h"]) > threshold or float(t["volume24h"]) * float(t["lastPrice"]) > threshold, 
+                lambda t: float(t.Turnover24h) > threshold or float(t.Volume24h) * float(t.LastPrice) > threshold, 
                 tickers
             )
         )
@@ -51,3 +52,34 @@ class SystemManager(AbstractSystemManager):
                          Macd=float(macd.iloc[-1]), MacdSignal=float(macd_signal.iloc[-1]), MacdHist=float(macd_hist.iloc[-1]),
                          BbHigh=float(bb_high.iloc[-1]), BbLow=float(bb_low.iloc[-1]), BbMid=float(bb_mid.iloc[-1]),
                          Atr=float(atr.iloc[-1]), Obv=float(obv.iloc[-1]), Timeframe=interval)
+
+    @staticmethod 
+    def to_dataframe(ticker: str) -> pandas.DataFrame:
+        klines = None 
+        with RedisClient() as redis_client: 
+            klines = redis_client.get(ticker)
+
+        if not klines:
+            return pandas.DataFrame()
+
+        data = [
+            {
+                "timestamp": int(k["Timestamp"]) if k["Timestamp"] else None,
+                "start_time": k["StartTime"],
+                "open": float(k["OpenPrice"]),
+                "high": float(k["HighPrice"]),
+                "low": float(k["LowPrice"]),
+                "close": float(k["ClosePrice"]),
+                "volume": float(k["Volume"]),
+                "turnover": float(k["Turnover"]),
+                "interval": k["Interval"],
+                "confirm": k["Confirm"]
+            }
+            for k in klines
+        ]
+
+        dataframe = pandas.DataFrame(data)
+
+        # Sort by time
+        dataframe = dataframe.sort_values("timestamp").reset_index(drop=True)
+        return dataframe

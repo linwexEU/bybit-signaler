@@ -16,12 +16,12 @@ class OpenAIClient(AbstractOpenAIClient):
     def create_response(self, prompt: str) -> str:
         screenshots_b64 = self.get_screenshot_for_promtp()
         response = self.client.responses.create(
-            model="gpt-4o", 
+            model="gpt-4.1", 
             input=[
                 {
                     "role": "system", 
                     "content": [
-                        {"type": "input_text", "text": "Вы опытный помощник в трейдинге. Отвечайте кратко и профессионально."}
+                        {"type": "input_text", "text": "Представь, что ты — профессиональный технический аналитик и трейдер с 10-летним опытом работы на криптовалютном рынке. Твой анализ должен быть максимально объективным, подробным и структурированным, как если бы ты готовил его для инвестиционного фонда."}
                     ]
                 },
                 {
@@ -52,11 +52,6 @@ class OpenAIClient(AbstractOpenAIClient):
                 screenshots_b64.append(f"data:image/png;base64,{b64_image}")
 
             # Delete it
-            # os.remove(fr"{settings.DOWNLOAD_DIR}\{screenshot_name}")
+            os.remove(fr"{settings.DOWNLOAD_DIR}\{screenshot_name}")
 
         return screenshots_b64
-
-
-if __name__ == "__main__": 
-    openai_client = OpenAIClient()
-    openai_client.create_response()

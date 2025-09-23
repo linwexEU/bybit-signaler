@@ -12,9 +12,5 @@ class CandleQueries:
             for timeframe in ["5", "15", "60", "240", "D", "W"]: 
                 candles = uow.candle_repository.filters({"Ticker": ticker, "Timeframe": timeframe})
                 candles = [Candle.from_orm(candle) for candle in candles]
-
-                if len(candles) < 200:
-                    result.append(candles)
-                else:
-                    result.append(candles[-200:])
+                result.append(candles)
         return result

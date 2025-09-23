@@ -25,6 +25,17 @@ class Settings(BaseSettings):
     DB_PORT: int
     DB_NAME: str
 
+    REDIS_HOST: str
+    REDIS_PORT: int
+
+    API_ID: int
+    API_HASH: str
+
+    GROUP_LINK: str
+
+    SESSION_NAME: str
+    SESSION_PATH: str
+
     COOKIES_PATH: str
     DOWNLOAD_DIR: str
 
@@ -33,6 +44,10 @@ class Settings(BaseSettings):
     @property
     def DATABASE_URL(self) -> str: 
         return f"postgresql://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+
+    @property
+    def REDIS_URL(self) -> str: 
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}/"
 
     class ConfigDict: 
         env_file = dotenv_path

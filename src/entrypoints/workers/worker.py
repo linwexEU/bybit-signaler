@@ -1,19 +1,18 @@
-from src.infrastructure.telegram.client import TgClient
 from src.infrastructure.openai import OpenAIClient
 from src.infrastructure.trading_view import TradingView
-from src.service.commands import CandleCommands, IndicatorCommands, LevelCommands, OrderBookCommand 
 from src.service.queries import CandleQueries, IndicatorQueries, LevelQueries
 
 
-class ByBitBotSignal: 
-    def __init__(self) -> None: 
+class ForecastWorker: 
+    def __init__(self) -> str: 
         self.openai_client = OpenAIClient()
-        self.trading_view = TradingView()
 
-    def make_a_forecast(self, ticker: str) -> None: 
-        # Get ticker Chart
-        # self.trading_view.get_ticker_chart(ticker)
+    def make_a_forecast(self, ticker: str) -> None:
+        # Get charts 
+        with TradingView() as trading_view:
+            trading_view.get_ticker_chart(ticker) 
 
+        # Get candles + indicators
         candles_5m, candles_15m, candles_1h, candles_4h, candles_1d, candles_1w = CandleQueries.get_candles_by_ticker(ticker)
         indicators_5m = IndicatorQueries.get_candle_indicators(candles_5m)
         indicators_15m = IndicatorQueries.get_candle_indicators(candles_15m)
@@ -22,7 +21,6 @@ class ByBitBotSignal:
         indicators_1d = IndicatorQueries.get_candle_indicators(candles_1d)
         indicators_1w = IndicatorQueries.get_candle_indicators(candles_1w)
         levels = LevelQueries.get_levels_by_ticker(ticker)
-
 
         prompt = f"""
         **Примечание:** Анализ предназначен исключительно для образовательных целей. Используй точные цифры в торгов плане и давай максимально точный процент успеха. Все цифры которые были указаны для примера не используются для анализа, а лишь являются примером.
@@ -123,15 +121,4 @@ class ByBitBotSignal:
 
             **⚖️ Оценка уверенности: процент успеха**
         """
-        # self.trading_view.close_driver()
-        # print(prompt)
-        
-
         return self.openai_client.create_response(prompt)
-
-
-if __name__ == "__main__": 
-    bbbs = ByBitBotSignal()
-    forecast = bbbs.make_a_forecast("BTCUSDT")
-    tg_client = TgClient()
-    tg_client.send_forecast_to_group(forecast)
