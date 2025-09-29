@@ -5,11 +5,12 @@ from src.infrastructure.bybit import ByBitRESTClient
 from src.infrastructure.unit_of_work import SQLAlchemyUnitOfWork
 from src.infrastructure.db.base import session_factory
 from src.infrastructure.redis import RedisClient
-from src.service.commands.indicators import IndicatorCommands
+from src.logger import log
 
 
 class CandleCommands:
     @staticmethod
+    @log
     def get_and_save_candles(ticker: str, interval: str = "5", limit: int = 200) -> int:
         # Init ByBitClient
         rest_instance = ByBitRESTClient() 

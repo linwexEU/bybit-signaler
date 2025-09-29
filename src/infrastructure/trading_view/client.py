@@ -9,6 +9,7 @@ from selenium import webdriver
 
 from src.domain.interfaces import AbstractTradingView
 from src.config import settings
+from src.logger import log
 
 
 class TradingView(AbstractTradingView): 
@@ -38,9 +39,11 @@ class TradingView(AbstractTradingView):
 
         self.driver = webdriver.Chrome(options=chrome_options)
 
+    @log
     def _save_login_cookies(self) -> None: 
         pickle.dump(self.driver.get_cookies(), open(fr"{settings.COOKIES_PATH}\tw_cookies", "wb")) 
 
+    @log
     def _load_login_cookies(self) -> None: 
         for cookie in pickle.load(open(fr"{settings.COOKIES_PATH}\tw_cookies", "rb")): 
             self.driver.add_cookie(cookie)
@@ -49,11 +52,13 @@ class TradingView(AbstractTradingView):
         # Load driver with cookies
         self.driver.refresh()
 
+    @log
     def _wait_until_page_loaded(self) -> None: 
         WebDriverWait(self.driver, 10).until(
             lambda d: d.execute_script("return document.readyState") == "complete"
         )
 
+    @log
     def _wait_for_element(self, element: tuple) -> None: 
         while True: 
             try: 
@@ -64,6 +69,7 @@ class TradingView(AbstractTradingView):
             except: 
                 continue
 
+    @log
     def login_without_automation(self, time_to_wait: int = 200) -> None:
         self.driver.get(self.LOGIN_URL)
         self._wait_until_page_loaded()
@@ -74,6 +80,7 @@ class TradingView(AbstractTradingView):
         # Save cookies
         self._save_login_cookies()
 
+    @log
     def _download_screenshot(self) -> None: 
         screenshot_button = self.driver.find_element(By.XPATH, '//*[@id="header-toolbar-screenshot"]')
         screenshot_button.click() 
@@ -83,11 +90,13 @@ class TradingView(AbstractTradingView):
         download_screenshot.click()
         time.sleep(1)
 
+    @log
     def _open_additional_tfs(self) -> None:
         additional_tf = self.driver.find_element(By.XPATH, '//*[@id="header-toolbar-intervals"]/button')
         additional_tf.click()
         time.sleep(1)
 
+    @log
     def get_ticker_chart(self, ticker: str) -> None: 
         self.driver.get("https://ru.tradingview.com/")
         self._load_login_cookies()
@@ -157,6 +166,7 @@ class TradingView(AbstractTradingView):
 
         self._download_screenshot()
 
+    @log
     def close_driver(self) -> None: 
         self.driver.close() 
         self.driver.quit() 

@@ -2,10 +2,12 @@ from src.domain.models import Indicator, Candle
 
 from src.infrastructure.db.base import session_factory
 from src.infrastructure.unit_of_work import SQLAlchemyUnitOfWork
+from src.logger import log
 
 
 class IndicatorQueries: 
     @staticmethod
+    @log
     def get_candle_indicators(candles: list[Candle]) -> list[Indicator]: 
         indicators = []
         with SQLAlchemyUnitOfWork(session_factory) as uow: 

@@ -1,10 +1,12 @@
 from src.infrastructure.bybit import SystemManager
 from src.infrastructure.db.base import session_factory 
 from src.infrastructure.unit_of_work import SQLAlchemyUnitOfWork
+from src.logger import log
 
 
 class IndicatorCommands: 
     @staticmethod
+    @log
     def get_and_save_indicators(ticker: str, interval: str, candle_id: int) -> None: 
         # Get dataframe
         dataframe = SystemManager.to_dataframe(ticker)

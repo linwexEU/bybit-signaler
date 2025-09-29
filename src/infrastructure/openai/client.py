@@ -6,6 +6,7 @@ import openai
 
 from src.domain.interfaces import AbstractOpenAIClient
 from src.config import settings
+from src.logger import log
 
 
 class OpenAIClient(AbstractOpenAIClient): 
@@ -13,6 +14,7 @@ class OpenAIClient(AbstractOpenAIClient):
         self.client = openai.Client(api_key=settings.OPENAI_API_KEY)
         self.path = Path(settings.DOWNLOAD_DIR)
 
+    @log
     def create_response(self, prompt: str) -> str:
         screenshots_b64 = self.get_screenshot_for_promtp()
         response = self.client.responses.create(
@@ -40,6 +42,7 @@ class OpenAIClient(AbstractOpenAIClient):
         )
         return response.output[0].content[0].text
 
+    @log
     def get_screenshot_for_promtp(self) -> list[str]:
         # Get screenshot name
         screenshots_name = list(self.path.walk())[0][-1]

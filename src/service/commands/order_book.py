@@ -1,10 +1,12 @@
 from src.infrastructure.bybit import ByBitRESTClient
 from src.infrastructure.db.base import session_factory 
 from src.infrastructure.unit_of_work import SQLAlchemyUnitOfWork
+from src.logger import log
 
 
 class OrderBookCommand: 
     @staticmethod
+    @log
     def get_and_save_order_book(ticker: str) -> None: 
         # Init ByBitClient
         rest_instance = ByBitRESTClient()

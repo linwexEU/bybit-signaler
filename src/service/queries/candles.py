@@ -1,11 +1,12 @@
 from src.domain.models import Candle
 from src.infrastructure.db.base import session_factory
 from src.infrastructure.unit_of_work import SQLAlchemyUnitOfWork
-
+from src.logger import log
 
 
 class CandleQueries: 
     @staticmethod
+    @log
     def get_candles_by_ticker(ticker: str) -> list[list[Candle]]:
         result = []
         with SQLAlchemyUnitOfWork(session_factory) as uow:

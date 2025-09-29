@@ -1,5 +1,6 @@
 import schedule
 
+from src.logger import configure_logging
 from src.infrastructure.telegram import TgClient
 from src.entrypoints.workers.worker import ForecastWorker
 from src.infrastructure.schedule.tasks import collecting_data_every_15m, collecting_data_every_1h, collecting_data_every_4h, \
@@ -16,7 +17,8 @@ class BybitBotSignaler:
         self.worker = ForecastWorker() 
         self.tg_client = TgClient()
 
-    def schedule_tasks(self) -> None: 
+    def schedule_tasks(self) -> None:
+        # Schedule collecting data
         for ticker in self.tickers:
             schedule.every(5).minutes.do(collecting_data_every_5m, ticker=ticker.Symbol)
             schedule.every(15).minutes.do(collecting_data_every_15m, ticker=ticker.Symbol)
@@ -24,14 +26,24 @@ class BybitBotSignaler:
             schedule.every(1).hour.do(collecting_order_book_every_1h, ticker=ticker.Symbol)
             schedule.every(1).hour.do(collecting_levels_every_1h, ticker=ticker.Symbol)
             schedule.every(4).hours.do(collecting_data_every_4h, ticker=ticker.Symbol)
-            schedule.every(5).hours.do(forecast_task, ticker=ticker.Symbol, worker=self.worker, telegram_client=self.tg_client)
             schedule.every().day.at("00:00").do(collecting_data_every_day, ticker=ticker.Symbol)
             schedule.every().monday.do(collecting_data_every_week, ticker=ticker.Symbol)
-        
 
-if __name__ == "__main__": 
+        # Schedule forecasting
+        for minute, ticker in enumerate(self.tickers, start=1):
+            schedule.every(5).hours.at(f"00:{minute:02d}").do(
+                forecast_task, ticker=ticker.Symbol, worker=self.worker, telegram_client=self.tg_client
+            )
+            
+
+if __name__ == "__main__":
+    # Configure logging
+    configure_logging() 
+
+    # Init BybitBotSignaler
     bbbs = BybitBotSignaler()
     bbbs.schedule_tasks()
 
+    # Run scheduling
     while True: 
         schedule.run_pending()

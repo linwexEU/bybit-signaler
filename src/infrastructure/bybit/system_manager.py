@@ -4,10 +4,12 @@ import ta
 from src.domain.interfaces import AbstractSystemManager
 from src.domain.models import Indicator, Ticker
 from src.infrastructure.redis import RedisClient
+from src.logger import log
 
 
 class SystemManager(AbstractSystemManager): 
     @staticmethod
+    @log
     def get_active_tickers(tickers: list[Ticker], threshold: int) -> list[Ticker]:
         return list(
             filter(
@@ -17,6 +19,7 @@ class SystemManager(AbstractSystemManager):
         )
 
     @staticmethod
+    @log
     def calculate_indicators(dataframe: pandas.DataFrame, interval: str, candle_id: int) -> Indicator:
         if dataframe.empty or len(dataframe) < 21:
             raise ValueError("Too small dataframe. Can't do calculation")
@@ -53,7 +56,8 @@ class SystemManager(AbstractSystemManager):
                          BbHigh=float(bb_high.iloc[-1]), BbLow=float(bb_low.iloc[-1]), BbMid=float(bb_mid.iloc[-1]),
                          Atr=float(atr.iloc[-1]), Obv=float(obv.iloc[-1]), Timeframe=interval)
 
-    @staticmethod 
+    @staticmethod
+    @log
     def to_dataframe(ticker: str) -> pandas.DataFrame:
         klines = None 
         with RedisClient() as redis_client: 

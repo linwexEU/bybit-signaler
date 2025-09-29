@@ -2,10 +2,12 @@ from src.domain.models import OrderBook, Level
 from src.domain.enums import LevelType
 from src.infrastructure.db.base import session_factory 
 from src.infrastructure.unit_of_work import SQLAlchemyUnitOfWork
+from src.logger import log
 
 
 class LevelCommands: 
     @staticmethod
+    @log
     def get_and_save_levels(ticker: str) -> None: 
         with SQLAlchemyUnitOfWork(session_factory) as uow: 
             order_book = uow.order_book_repository.filters({"Ticker": ticker})[0]
