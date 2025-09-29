@@ -171,7 +171,7 @@ class Indicator(EntityToDict):
 class Level(EntityToDict):
     Ticker: str
     LevelPrice: float
-    Strength: int
+    Strength: float
     Type: LevelType
     LastTouched: datetime
 

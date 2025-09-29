@@ -16,7 +16,7 @@ class LevelCommands:
             # Top 10 bid
             for bid in order_book.Bids[:10]:
                 support_level = Level(
-                    Ticker=order_book.Ticker, LevelPrice=float(bid.BidPrice), Strength=int(float(bid.BidSize)), 
+                    Ticker=order_book.Ticker, LevelPrice=float(bid.BidPrice), Strength=float(bid.BidSize), 
                     Type=LevelType.Support, LastTouched=order_book.Timestamp
                 )
                 uow.level_repository.insert(support_level.to_dict())
@@ -24,7 +24,7 @@ class LevelCommands:
             # Top 10 ask
             for ask in order_book.Asks[:10]: 
                 resistance_level = Level(
-                    Ticker=order_book.Ticker, LevelPrice=float(ask.AskPrice), Strength=int(float(ask.AskSize)), 
+                    Ticker=order_book.Ticker, LevelPrice=float(ask.AskPrice), Strength=float(ask.AskSize), 
                     Type=LevelType.Resistance, LastTouched=order_book.Timestamp
                 )
                 uow.level_repository.insert(resistance_level.to_dict())

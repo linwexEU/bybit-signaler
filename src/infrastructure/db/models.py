@@ -68,6 +68,6 @@ class Level(Base):
     Id: Mapped[int] = mapped_column(primary_key=True, index=True)
     Ticker: Mapped[str] = mapped_column(nullable=False, index=True) 
     LevelPrice: Mapped[float] = mapped_column(nullable=False)
-    Strength: Mapped[int] = mapped_column(default=1) 
+    Strength: Mapped[float] = mapped_column() 
     Type: Mapped[LevelType] = mapped_column(nullable=False)
     LastTouched: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), default=datetime.now(timezone.utc))

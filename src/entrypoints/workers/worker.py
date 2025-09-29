@@ -1,12 +1,14 @@
 from src.infrastructure.openai import OpenAIClient
 from src.infrastructure.trading_view import TradingView
 from src.service.queries import CandleQueries, IndicatorQueries, LevelQueries
+from src.logger import log
 
 
 class ForecastWorker: 
     def __init__(self) -> str: 
         self.openai_client = OpenAIClient()
 
+    @log
     def make_a_forecast(self, ticker: str) -> None:
         # Get charts 
         with TradingView() as trading_view:
